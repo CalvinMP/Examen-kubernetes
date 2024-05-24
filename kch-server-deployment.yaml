@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kch-database-deployment
+  name: kch-server-deployment
   namespace: np-kch
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: database
+      app: server
   template:
     metadata:
       labels:
-        app: database
+        app: server
     spec:
       containers:
-      - name: database
-        image: dockerman75/counter-database
+      - name: server
+        image: dockerman75/server-count-kch
