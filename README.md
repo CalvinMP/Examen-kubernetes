@@ -1,98 +1,80 @@
-# Examen
+## Git bash : 
 
-## Prérequis
+#### Création et lancement de la base de données
+./build.sh
+./run.sh
 
-Récupérer le fichier kubeconfig.yml
 
-```SH
-export KUBECONFIG=<absolute-path-to>/kubeconfig.yml
-```
-
-Vous allez utiliser un cluster distant, il ne faut donc pas utiliser de commandes commençant par `minikube`.
-
-## Tâches
-
-Vous allez travailler tous sur le même cluster. Il est donc important de créer un namespace pour chacun et de nommer vos ressources avec des noms identifiables.
-
-C'est également important pour les `labels selector` pour éviter les collisions entre le travail de deux élèves.
-(un service qui cible des pods de deux personnes par exemple).
-
-### Images docker
-
-Pour utiliser vos images docker dans le cluster il est conseillé d'utiliser un registre docker distant.
-
-Comme dockerhub, une version publique de l'image fera l'affaire.
-
-### Le projet
-
-Le code fourni est un code de serveur en `Node.js` permettant de compter des occurences à partir d'une queue `RabbitMQ` et de stocker la valeurs courantes dans une base de données `PostgreSQL`.
-
-Pour démarrer le serveur vous devez lui fournir les configurations adéquates dans les variables d'environment. (cf .env d'exemple).
-
-### RabbitMQ
-
-Comme spécifié dans <a href="https://github.com/arthurescriou/k8s-exercice-eda" >l'exercice </a> précédent, déployez RabbitMQ sur le cluster.
-
-### PostgreSQL
-
-Vous devez déployer la base Postres comme spécifié dans le dossier `database`.
-
-### Serveur
-
-Fourni dans le dossier `backend`.
-
-Vous devez créer un déploiement pour lancer un pod de serveur en suivant les instructions.
-
-Une fois le serveur fonctionnel ajoutez un autoscaler pour qu'il suive la charge.
-
-### Tester l'application
-
-Vous avez à votre disposition un script: `count.js` dans le dossier du serveur.
-
-Veillez à configurer les variables d'environment pour le lancer.
-
-Vous devez créer un compteur dans votre base pour l'utiliser et spécifier son uuid :
-
-```bash
+#### Création du compteur : 
 curl localhost:4040/count/create -X POST
-```
 
-## Rendu
+#### output : 
+{"id":"31783cc3-f5a2-4ab8-9443-127293d2cce1","value":"0","created_at":"2024-05-24T10:28:37.107Z","updated_at":"2024-05-24T10:28:37.107Z"}
 
-Veuillez regrouper tous vos fichiers yaml de déploiement (et ou commande lancées en bash) dans un repository git muni d'un readme.md.
+#### Lancement de count.js :
+'node count.js'
 
-Pousser le repository en ligne (github, gitlab etc).
-Et m'envoyer le lien par mail (cela peut être fait en debut d'examen, je regarderai la dernière version poussée)
+Output: 
+trying to connect to  amqp://localhost:5672
+send
+send
+send
+send
+send...
 
-## Commandes utiles
+## Powershell :
 
-Créer un namespace
+#### Création d'un namespace :
+kubectl create namespace np-kch
 
-```bash
-kubectl create namespace <insert-namespace-name-here>
-```
+kubectl --kubeconfig .\kubeconfig.yml apply -f .\kch-pod.yaml
 
-Visualiser les ressources déployées
+#### Vérification de la présence du pod : 
+kubectl --kubeconfig .\kubeconfig.yml get pods
 
-```bash
-kubectl get pods --namespace=name
-kubectl get services --namespace=name
-kubectl get deployments --namespace=name
-kubectl get namespace --namespace=name
-```
+#### Lancement de Rabbit
+docker run -d --name rabbitmq -p 5672:5672 rabbitmq
 
-Récupérer les log d'un pod
+#### On vérifie que rabbit est bien lancé avec la commande 'docker ps', output :
 
-```bash
-kubectl logs <pod-id>
-```
+CONTAINER ID   IMAGE              COMMAND                  CREATED          STATUS         PORTS                   
+                                                 NAMES
+befeb66a371b   rabbitmq           "docker-entrypoint.s…"   11 seconds ago   Up 9 seconds   4369/tcp, 5671/tcp, 15691-15692/tcp, 25672/tcp, 0.0.0.0:5672->5672/tcp   rabbitmq
+64f8531acd1a   counter-database   "docker-entrypoint.s…"   3 hours ago      Up 3 hours     0.0.0.0:5432->5432/tcp                                                   counter-database
 
-Utiliser un fichier yaml, dans votre cas l'image docker ne devrais pas changer donc il est possible de seulement apply le yaml une fois créé
 
-Pensez à nommer votre yaml avec votre nom (et pas juste pod.yaml, pour éviter les collisions)
+#### Lancement 'npm start', output :
+> lambda@1.0.0 start
+> ts-node src/main
 
-```bash
-kubectl create -f file.yaml
-kubectl delete -f file.yaml
-kubectl apply -f file.yaml
-```
+[2024-05-24T12:16:46.869Z](at Object):  {
+  user: 'count',
+  host: 'localhost',
+  database: 'count',
+  port: '5432',
+  password: 'count'
+}
+[2024-05-24T12:16:47.044Z](at listenRabbit):  trying to connect to  amqp://localhost:5672
+[2024-05-24T12:16:47.048Z](at origin):  undefined
+--> Routes:  {
+  GET: [ '/', '/routes', '/count', '/count/:id' ],
+  POST: [ '/count/:id/add', '/count/:id/reset', '/count/create' ],
+  PATCH: [ '/count/delete' ],
+  NOT_FOUND: [ '/' ]
+}
+Postgres: Connection success
+[2024-05-24T12:16:47.121Z](at listenRabbit):  connected to  amqp://localhost:5672
+[2024-05-24T12:28:31.298Z](at create):  create
+[2024-05-24T12:28:31.322Z] ----->  [200] [post#/count/create]
+[2024-05-24T12:28:31.323Z] ----->    request.body = null
+
+
+#### Application du fichier déployment :
+Commande : 'kubectl --kubeconfig .\kubeconfig.yml apply -f ./kch-deployment.yaml'
+
+On vérifie qu'il est bien présent : 
+Commande : kubectl --kubeconfig .\kubeconfig.yml get deployments --namespace=np-kch
+
+Output : 
+NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
+kch-database-deployment   0/1     1            0           68s
