@@ -1,6 +1,6 @@
 const amqplib = require('amqplib');
 
-const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://localhost:5672'
+const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://guest:guest@162.19.110.154'
 const QUEUE = process.env.QUEUE || 'count'
 const INTERVAL = process.env.INTERVAL || '1000'
 const COUNTER = process.env.COUNT || '2a2f6cd4-92ce-4708-89d4-15387a665b34'
