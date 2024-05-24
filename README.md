@@ -23,7 +23,7 @@ node count.js
 ```
 
 Output: 
-trying to connect to  amqp://localhost:5672
+trying to connect to  amqp://guest:guest@162.19.110.154
 send
 send
 send
@@ -37,6 +37,12 @@ send...
 kubectl create namespace np-kch
 
 kubectl --kubeconfig .\kubeconfig.yml apply -f .\kch-pod.yaml
+```
+
+#### Création d'une image docker pour la database 
+```SH
+docker build -t dockerman75/counter-database .
+docker push dockerman75/counter-database:latest
 ```
 
 #### Vérification de la présence du pod : 
@@ -90,6 +96,7 @@ Postgres: Connection success
 
 #### Application du fichier déployment :
 ```SH
+kubectl --kubeconfig .\kubeconfig.yml create -f ../kch-deployment.yaml
 kubectl --kubeconfig .\kubeconfig.yml apply -f ./kch-deployment.yaml
 ```
 
@@ -101,3 +108,11 @@ kubectl --kubeconfig .\kubeconfig.yml get deployments --namespace=np-kch
 Output : 
 NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
 kch-database-deployment   0/1     1            0           68s
+
+#### Création d'un serveur
+```SH
+docker build -t dockerman75/server-count-kch backend
+docker push dockerman75/server-count-kch:latest
+
+kubectl --kubeconfig .\kubeconfig.yml create -f ../kch-server-deployment.yaml
+```
