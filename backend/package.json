@@ -2,6 +2,7 @@
   "name": "lambda",
   "version": "1.0.0",
   "main": "index.js",
+  "type":"module",
   "license": "MIT",
   "dependencies": {
     "@babel/core": "^7.19.6",
@@ -23,7 +24,7 @@
     "babel-jest": "^29.2.2",
     "ts-node": "^10.9.1",
     "tsc": "^2.0.4",
-    "typescript": "^4.8.4"
+    "typescript": "^4.9.5"
   },
   "scripts": {
     "start": "ts-node src/main",
