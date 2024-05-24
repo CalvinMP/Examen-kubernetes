@@ -1,18 +1,26 @@
 ## Git bash : 
 
 #### Création et lancement de la base de données
+```SH
 ./build.sh
 ./run.sh
+```
 
 
 #### Création du compteur : 
+```SH
 curl localhost:4040/count/create -X POST
+```
 
-#### output : 
+Output : 
+```SH
 {"id":"31783cc3-f5a2-4ab8-9443-127293d2cce1","value":"0","created_at":"2024-05-24T10:28:37.107Z","updated_at":"2024-05-24T10:28:37.107Z"}
+```
 
 #### Lancement de count.js :
-'node count.js'
+```SH 
+node count.js
+```
 
 Output: 
 trying to connect to  amqp://localhost:5672
@@ -25,15 +33,21 @@ send...
 ## Powershell :
 
 #### Création d'un namespace :
+```SH
 kubectl create namespace np-kch
 
 kubectl --kubeconfig .\kubeconfig.yml apply -f .\kch-pod.yaml
+```
 
 #### Vérification de la présence du pod : 
+```SH
 kubectl --kubeconfig .\kubeconfig.yml get pods
+```
 
 #### Lancement de Rabbit
+```SH
 docker run -d --name rabbitmq -p 5672:5672 rabbitmq
+```
 
 #### On vérifie que rabbit est bien lancé avec la commande 'docker ps', output :
 
@@ -43,7 +57,12 @@ befeb66a371b   rabbitmq           "docker-entrypoint.s…"   11 seconds ago   Up
 64f8531acd1a   counter-database   "docker-entrypoint.s…"   3 hours ago      Up 3 hours     0.0.0.0:5432->5432/tcp                                                   counter-database
 
 
-#### Lancement 'npm start', output :
+#### Lancement 
+```SH
+npm start
+```
+```SH 
+Output :
 > lambda@1.0.0 start
 > ts-node src/main
 
@@ -67,13 +86,17 @@ Postgres: Connection success
 [2024-05-24T12:28:31.298Z](at create):  create
 [2024-05-24T12:28:31.322Z] ----->  [200] [post#/count/create]
 [2024-05-24T12:28:31.323Z] ----->    request.body = null
-
+```
 
 #### Application du fichier déployment :
-Commande : 'kubectl --kubeconfig .\kubeconfig.yml apply -f ./kch-deployment.yaml'
+```SH
+kubectl --kubeconfig .\kubeconfig.yml apply -f ./kch-deployment.yaml
+```
 
 On vérifie qu'il est bien présent : 
-Commande : kubectl --kubeconfig .\kubeconfig.yml get deployments --namespace=np-kch
+```SH 
+kubectl --kubeconfig .\kubeconfig.yml get deployments --namespace=np-kch
+```
 
 Output : 
 NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
